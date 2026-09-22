@@ -85,7 +85,7 @@ while True:
 
 
 # financial manager
-def financial_manager():
+def financial_manager_entry():
     print(" ----- add finantial entry -----")
     name = input("enter the name of the financial entry:==")
     date = input("enter the date of the financial entry (dd/mm/yyyy):==")
@@ -122,5 +122,45 @@ def financial_manager():
         "record": record
     }
     return new_entry
-new_entry = financial_manager()
+new_entry = financial_manager_entry()
 print(f"financial entry added successfully as {new_entry}")
+def view_financial_ledger():
+    """Iterates through and prints all stored logs cleanly using a for loop."""
+    print("---  Account Activity Ledger ---")
+    if len(financial_manager_entry) == 0:
+        print("No transaction entries logged yet.")
+        return
+        
+    print(f"{'Name':<15} | {'Date':<12} | {'Type':<6} | {'Amount'}")
+    print("-" * 50)
+    
+    for entry in financial_manager_entry:
+        if entry["type"] == "Gain":
+            marker = "+"
+        else:
+            marker = "-"
+        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['type']:<6} | {marker}${entry['amount']:,.2f}")
+
+
+def finance_dashboard_menu():
+    """The post-login dashboard built with a continuous while loop."""
+    while True:
+        print("==============================")
+        print(f"   FINANCE DASHBOARD: {username__}   ")
+        print("==============================")
+        print("1. Add New Transaction Record")
+        print("2. View Ledger Activity Logs")
+        print("3. Log Out / Exit System")
+        
+        choice = input("\nSelect an action (1-3): ").strip()
+        
+        if choice == "1":
+            new_entry = financial_manager_entry()
+            financial_manager_entry.append(new_entry)
+        elif choice == "2":
+            view_financial_ledger()
+        elif choice == "3":
+            print("Safely logging out of your session. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter 1, 2, or 3.")
