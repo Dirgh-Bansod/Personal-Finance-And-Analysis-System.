@@ -1,32 +1,38 @@
-# creating the usere sineup
+# creating the usere sineup and login
 global username__, pasword__
 username__=""
 pasword__=""
 
 def new_user_registration():
+    global username__, pasword__
     print(" ------ New User Registration ------")
 
     while True:
         username = input("create a username unique to you:== ")
-        if username == username__:
-            print("another user already use this username, please try another one")
-            if username=="":
+        if username=="":
                 print("username cannot be empty")
-            else:
-                break
+        elif username == username__:
+            print("another user already use this username, please try another one")
+        else:
+            username__ = username
+            break
 
     while True:
         pasword = input("create a unique pasword , pasword must be 10 characteers long with atleast 2 numbers:==")
         pasword_confirm = input("confirm your pasword:==")
+        digit = sum(1 for char in pasword if char.isdigit())
         if len(pasword) < 10:
             print("pasword must be atleast 10 characters long")
-        elif pasword == sum(1 for char in pasword if char.isdigit()):
-            if pasword < 2:
+        elif  digit < 2:
                 print("pasword must have atleast 2 numbers")
-                if pasword == "":
+        elif pasword == "":
                     print("pasword cannot be empty")
-                else:
-                     break
+        elif pasword != pasword_confirm:
+            print("pasword does not match, please try again")
+        else:
+            pasword__ = pasword
+            print("registration is successfull, you can login now:  ")
+            break
 
 
 
@@ -44,16 +50,33 @@ def user_login():
                return True
             else:
                 print("wrong username or password, please try again")
-                return
+                
 
 logged_in = False
+loop_safety=0
 while True:
-    print("1. New User Registration")
-    print("2. User Login")
-    choice = input("Enter your choice 1 or 2:== ")
+    print("\n==============================")
+    print("    ACCOUNT GATEWAY SYSTEM    ")
+    print("==============================")
+    print("1. Register New Account")
+    print("2. Login to Dashboard")
+    print("3. Exit Program")
+
+    choice = input("\nSelect an option (1-3): ").strip() 
+    if loop_safety =="":
+        print("Too many invalid attempts. Exiting program.")
+        
     if choice == "1":
         new_user_registration()
     elif choice == "2":
         logged_in = user_login()
+        if logged_in:
+            print("\n You have bypassed security! Entering the main terminal interface...")
+            break 
+    elif choice == "3":
+        print("\nProgram ended.")
+        break
     else:
-        print("Invalid choice, please try again.")
+        print("Invalid choice. Please select option 1, 2, or 3.")
+        input("please select a valid option to continue:==")
+   
