@@ -62,7 +62,7 @@ while True:
     print("2. Login to Dashboard")
     print("3. Exit Program")
 
-    choice = input("Select an option (1-3): ").strip() 
+    choice = input("Select an option (1-3): ")
     if loop_safety =="":
         print("Too many invalid attempts. Exiting program.")
         
@@ -79,4 +79,48 @@ while True:
     else:
         print("Invalid choice. Please select option 1, 2, or 3.")
         input("please select a valid option to continue:==")
-   
+
+
+
+
+
+# financial manager
+def financial_manager():
+    print(" ----- add finantial entry -----")
+    name = input("enter the name of the financial entry:==")
+    date = input("enter the date of the financial entry (dd/mm/yyyy):==")
+    while True:
+        try:
+            ammount = float(input("enter the ammount of the financial entry:=="))
+            if ammount <= 0:
+                print("enter a valid ammount greater than 0")
+                continue
+            break
+        except ValueError:
+            print("Invalid input. Please enter a right value for the ammount.")
+    while True:
+        print(" ----------------------------------------------")
+        print("                TRANSACTION TYPE               ")
+        print(" ----------------------------------------------")
+        print("     1.      gain (income or revenue )           ")
+        print("     2.      loss (expense or cost)              ")
+        print(" ----------------------------------------------")
+        transaction_type = input("select clacificaation option (1 or 2):==")
+        if transaction_type == "1":
+            record = "gain"
+            break
+        elif transaction_type == "2":
+            record = "loss"
+            break
+        else:
+            print("Invalid choice. Please select option 1 or 2.")
+
+    new_entry = {
+        "name": name,
+        "date": date,
+        "ammount": ammount,
+        "record": record
+    }
+    return new_entry
+new_entry = financial_manager()
+print(f"financial entry added successfully as {new_entry}")
