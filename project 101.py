@@ -1,4 +1,4 @@
-# creating the usere login and sinup
+# creating the usere sineup
 global username__, pasword__
 username__=""
 pasword__=""
@@ -20,11 +20,18 @@ def new_user_registration():
         pasword_confirm = input("confirm your pasword:==")
         if len(pasword) < 10:
             print("pasword must be atleast 10 characters long")
-        elif nuymber = sum(1 for char in pasword if char.isdigit()):
-            if nuymber < 2:
+        elif pasword == sum(1 for char in pasword if char.isdigit()):
+            if pasword < 2:
                 print("pasword must have atleast 2 numbers")
                 if pasword == "":
                     print("pasword cannot be empty")
-                elif:
+                else:
                      break
-                
+
+
+
+def user_login():
+    print(" ------ User Login page ------")
+    
+  
+       
