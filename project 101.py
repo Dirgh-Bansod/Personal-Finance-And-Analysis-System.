@@ -32,6 +32,28 @@ def new_user_registration():
 
 def user_login():
     print(" ------ User Login page ------")
-    
-  
-       
+    if username__ == "":
+        print("No user found, please register first or enter a valid user name")
+        return False
+    while True:
+            inputusername = input("enter your username:==")
+            inputpasword = input("enter your pasword:==")
+            if inputusername == username__ and inputpasword == pasword__:
+               print("login successful, access granter,  ")
+               print(f"welcome to the program {username__}")
+               return True
+            else:
+                print("wrong username or password, please try again")
+                return
+
+logged_in = False
+while True:
+    print("1. New User Registration")
+    print("2. User Login")
+    choice = input("Enter your choice 1 or 2:== ")
+    if choice == "1":
+        new_user_registration()
+    elif choice == "2":
+        logged_in = user_login()
+    else:
+        print("Invalid choice, please try again.")
