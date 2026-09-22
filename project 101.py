@@ -55,14 +55,14 @@ def user_login():
 logged_in = False
 loop_safety=0
 while True:
-    print("\n==============================")
-    print("    ACCOUNT GATEWAY SYSTEM    ")
+    print("==============================")
+    print("    LOGIN AND SIGNUP IN SYSTEM   ")
     print("==============================")
     print("1. Register New Account")
     print("2. Login to Dashboard")
     print("3. Exit Program")
 
-    choice = input("\nSelect an option (1-3): ").strip() 
+    choice = input("Select an option (1-3): ").strip() 
     if loop_safety =="":
         print("Too many invalid attempts. Exiting program.")
         
@@ -71,10 +71,10 @@ while True:
     elif choice == "2":
         logged_in = user_login()
         if logged_in:
-            print("\n You have bypassed security! Entering the main terminal interface...")
+            print("logged in successfully.")
             break 
     elif choice == "3":
-        print("\nProgram ended.")
+        print("Program ended.")
         break
     else:
         print("Invalid choice. Please select option 1, 2, or 3.")
