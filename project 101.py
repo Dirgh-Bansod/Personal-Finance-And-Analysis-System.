@@ -34,18 +34,20 @@ def save_financial_data():
 
 def load_financial_data():
     global financial_ledger
-    financial_ledger = []
+    financial_ledger = [] 
+    
     try:
         with open(entryfiles, "r") as file:
             for line in file:
-                cleaned_line = line.strip()
-                if cleaned_line:
-                    parts = cleaned_line.split("|||")
+                cleaned = line.strip()
+                if cleaned != "":
+                    parts = cleaned.split("|||")
                     if len(parts) == 4:
+                        val = float(parts[2]) 
                         entry = {
                             "name": parts[0],
                             "date": parts[1],
-                            "amount": float(parts[2]),
+                            "amount": val,
                             "record": parts[3]
                         }
                         financial_ledger.append(entry)
