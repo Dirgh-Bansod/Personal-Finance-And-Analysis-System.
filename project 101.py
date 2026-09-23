@@ -1,4 +1,4 @@
-## setting global names
+## setting global names####
 
 global username__, pasword__
 username__=""
