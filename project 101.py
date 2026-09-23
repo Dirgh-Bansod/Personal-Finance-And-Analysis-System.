@@ -1,8 +1,57 @@
-# creating the usere sineup and login
+## setting global names
+
 global username__, pasword__
 username__=""
 pasword__=""
+financial_ledger = []
+userfiles = "userfiles.txt" 
+entryfiles = "entryfiles.txt"
 
+# detailes of useres
+def save_user_details():
+    with open(userfiles, "w") as file:
+        file.write(f"{username__}|||{pasword__}")
+
+def load_user_data():
+    global username__, pasword__
+    try:
+        with open(userfiles, "r") as file:
+            line = file.read().strip()
+            if "|||" in line:
+                parts = line.split("|||")
+                username__ = parts[0]
+                pasword__ = parts[1]
+    except FileNotFoundError:
+        pass
+
+
+#finantial details.
+def save_financial_data():
+    with open(entryfiles, "w") as file:
+        for entry in financial_ledger:
+            line = f"{entry['name']}|||{entry['date']}|||{entry['ammount']}|||{entry['record']}\n"
+            file.write(line)
+
+def load_financial_data():
+    global financial_ledger
+    financial_ledger = []
+    try:
+        with open(entryfiles, "r") as file:
+            for line in file:
+                line = line.strip()
+                if line and "|||" in line:
+                    parts = line.split("|||")
+                    entry = {
+                        "name": parts[0],
+                        "date": parts[1],
+                        "ammount": float(parts[2]),
+                        "record": parts[3]
+                    }
+                    financial_ledger.append(entry)
+    except FileNotFoundError:
+        pass
+
+#creating new user 
 def new_user_registration():
     global username__, pasword__
     print(" ------ New User Registration ------")
@@ -31,11 +80,12 @@ def new_user_registration():
             print("pasword does not match, please try again")
         else:
             pasword__ = pasword
+            save_user_details()
             print("registration is successfull, you can login now:  ")
             break
 
 
-
+#user loginn
 def user_login():
     print(" ------ User Login page ------")
     if username__ == "":
@@ -50,38 +100,36 @@ def user_login():
                return True
             else:
                 print("wrong username or password, please try again")
-                
 
-logged_in = False
-loop_safety=0
-while True:
-    print("==============================")
-    print("    LOGIN AND SIGNUP IN SYSTEM   ")
-    print("==============================")
-    print("1. Register New Account")
-    print("2. Login to Dashboard")
-    print("3. Exit Program")
-
-    choice = input("Select an option (1-3): ")
-    if loop_safety =="":
-        print("Too many invalid attempts. Exiting program.")
+#finance dashboard menu
+def finance_dashboard_menu():
+    while True:
+        print("==============================")
+        print(f"   FINANCE DASHBOARD: {username__}   ")
+        print("==============================")
+        print("1. Add New Transaction Record")
+        print("2. View Ledger Activity Logs")
+        print("3. Log Out / Exit System")
         
-    if choice == "1":
-        new_user_registration()
-    elif choice == "2":
-        logged_in = user_login()
-        if logged_in:
-            print("logged in successfully.")
-            break 
-    elif choice == "3":
-        print("Program ended.")
-        break
-    else:
-        print("Invalid choice. Please select option 1, 2, or 3.")
-        input("please select a valid option to continue:==")
+        choice = input("Select an action (1-3): ").strip()
+        
+        if choice == "1":
+            new_entry = financial_manager_entry()
+            financial_ledger.append(new_entry)
+            save_financial_data()
+            print(f"financial entry added successfully as {new_entry}")
 
-
-
+            print("-----------------------------------------")
+            repeat = input("Do you want to add another entry? (y/n): ").strip().lower()
+            if repeat != "y":
+                print("Returning dashbord menu.")   
+        elif choice == "2":
+            view_financial_ledger()
+        elif choice == "3":
+            print("Safely logging out of your session. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter 1, 2, or 3.")
 
 
 # financial manager
@@ -123,44 +171,57 @@ def financial_manager_entry():
     }
     return new_entry
 new_entry = financial_manager_entry()
-print(f"financial entry added successfully as {new_entry}")
+
+
+
 def view_financial_ledger():
-    """Iterates through and prints all stored logs cleanly using a for loop."""
     print("---  Account Activity Ledger ---")
-    if len(financial_manager_entry) == 0:
+    if len(financial_ledger) == 0:
         print("No transaction entries logged yet.")
         return
         
     print(f"{'Name':<15} | {'Date':<12} | {'Type':<6} | {'Amount'}")
     print("-" * 50)
     
-    for entry in financial_manager_entry:
-        if entry["type"] == "Gain":
+    for entry in financial_ledger:
+        if entry["record"] == "Gain":
             marker = "+"
         else:
             marker = "-"
-        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['type']:<6} | {marker}${entry['amount']:,.2f}")
+        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['record']:<6} | {marker}${entry['amount']:,.2f}")
 
 
-def finance_dashboard_menu():
-    """The post-login dashboard built with a continuous while loop."""
-    while True:
-        print("==============================")
-        print(f"   FINANCE DASHBOARD: {username__}   ")
-        print("==============================")
-        print("1. Add New Transaction Record")
-        print("2. View Ledger Activity Logs")
-        print("3. Log Out / Exit System")
+
+
+
+#main loop
+load_user_data()
+load_financial_data()                
+
+logged_in = False
+loop_safety=0
+while True:
+    print("==============================")
+    print("    LOGIN AND SIGNUP IN SYSTEM   ")
+    print("==============================")
+    print("1. Register New Account")
+    print("2. Login to Dashboard")
+    print("3. Exit Program")
+
+    choice = input("Select an option (1-3): ")
+    if loop_safety =="":
+        print("Too many invalid attempts. Exiting program.")
         
-        choice = input("\nSelect an action (1-3): ").strip()
-        
-        if choice == "1":
-            new_entry = financial_manager_entry()
-            financial_manager_entry.append(new_entry)
-        elif choice == "2":
-            view_financial_ledger()
-        elif choice == "3":
-            print("Safely logging out of your session. Goodbye!")
-            break
-        else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
+    if choice == "1":
+        new_user_registration()
+    elif choice == "2":
+        logged_in = user_login()
+        if logged_in:
+            print("logged in successfully.")
+            finance_dashboard_menu()
+    elif choice == "3":
+        print("Program ended.")
+        break
+    else:
+        print("Invalid choice. Please select option 1, 2, or 3.")
+        input("please select a valid option to continue:==")
