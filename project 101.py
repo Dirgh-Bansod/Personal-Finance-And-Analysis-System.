@@ -38,16 +38,17 @@ def load_financial_data():
     try:
         with open(entryfiles, "r") as file:
             for line in file:
-                line = line.strip()
-                if line and "|||" in line:
-                    parts = line.split("|||")
-                    entry = {
-                        "name": parts[0],
-                        "date": parts[1],
-                        "ammount": float(parts[2]),
-                        "record": parts[3]
-                    }
-                    financial_ledger.append(entry)
+                cleaned_line = line.strip()
+                if cleaned_line:
+                    parts = cleaned_line.split("|||")
+                    if len(parts) == 4:
+                        entry = {
+                            "name": parts[0],
+                            "date": parts[1],
+                            "amount": float(parts[2]),
+                            "record": parts[3]
+                        }
+                        financial_ledger.append(entry)
     except FileNotFoundError:
         pass
 
@@ -225,5 +226,3 @@ while True:
     else:
         print("Invalid choice. Please select option 1, 2, or 3.")
         input("please select a valid option to continue:==")
-#sss
-print("Thank you for using the program. Goodbye!")
