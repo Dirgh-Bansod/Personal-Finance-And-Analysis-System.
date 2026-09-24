@@ -12,7 +12,7 @@ entryfiles = ""
 # detailes of useres
 def save_user_details(newuser, newpasword):
     with open(userfiles, "a") as file:
-        file.write(f"{newuser}|||{newpasword}")
+        file.write(f"{newuser}|||{newpasword}\n")
 
 def load_user_data():
     global userdatabase
@@ -64,13 +64,12 @@ def new_user_registration():
     load_user_data()
 
     while True:
-        username = input("create a username unique to you:== ")
+        username = input("create a username unique to you:== ").strip()
         if username == "":
             print("username cannot be empty")
         elif username == userdatabase:
             print("another user already use this username, please try another one")
         else:
-            username__ = username
             break
 
     while True:
@@ -114,6 +113,7 @@ def user_login():
             username__ = loginusername
             pasword__ = userdatabase[loginusername]
             entryfiles = f"{username__}_entryfiles.txt"
+            load_financial_data()
             return True
         else:
             attempts += 1
