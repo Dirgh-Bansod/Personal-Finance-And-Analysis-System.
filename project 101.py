@@ -47,7 +47,7 @@ def load_financial_data():
                         entry = {
                             "name": parts[0],
                             "date": parts[1],
-                            "amount": val,
+                            "ammount": val, 
                             "record": parts[3]
                         }
                         financial_ledger.append(entry)
@@ -173,9 +173,6 @@ def financial_manager_entry():
         "record": record
     }
     return new_entry
-new_entry = financial_manager_entry()
-
-
 
 def view_financial_ledger():
     print("---  Account Activity Ledger ---")
@@ -187,14 +184,11 @@ def view_financial_ledger():
     print("-" * 50)
     
     for entry in financial_ledger:
-        if entry["record"] == "Gain":
+        if entry["record"] == "gain":
             marker = "+"
         else:
             marker = "-"
-        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['record']:<6} | {marker}${entry['amount']:,.2f}")
-
-
-
+        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['record']:<6} | {marker}${entry['ammount']:,.2f}")
 
 
 #main loop
@@ -202,7 +196,6 @@ load_user_data()
 load_financial_data()                
 
 logged_in = False
-loop_safety=0
 while True:
     print("==============================")
     print("    LOGIN AND SIGNUP IN SYSTEM   ")
@@ -212,8 +205,6 @@ while True:
     print("3. Exit Program")
 
     choice = input("Select an option (1-3): ")
-    if loop_safety =="":
-        print("Too many invalid attempts. Exiting program.")
         
     if choice == "1":
         new_user_registration()
