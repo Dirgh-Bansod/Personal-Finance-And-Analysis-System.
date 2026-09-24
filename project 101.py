@@ -6,7 +6,7 @@ username__ = ""
 pasword__ = ""
 financial_ledger = []
 userfiles = "userfiles.txt" 
-entryfiles = "entryfiles.txt"
+entryfiles = ""
 
 # detailes of useres
 def save_user_details():
@@ -89,6 +89,7 @@ def new_user_registration():
 
 # user login with 3attempts
 def user_login():
+    global entryfiles
     print(" ------ User Login page ------")
     if username__ == "":
         print("No user found, please register first or enter a valid user name")
@@ -102,6 +103,7 @@ def user_login():
         
         if loginusername == username__ and loginpasword == pasword__:
             print("login successful, access granted.")
+            entryfiles = f"{username__}entryfiles.txt"
             return True
         else:
             attempts += 1
@@ -216,8 +218,7 @@ def view_financial_record():
 
 
 # main loop
-load_user_data()
-load_financial_data()                
+load_user_data()                
 
 logged_in = False
 while True:
@@ -235,6 +236,7 @@ while True:
         logged_in = user_login()
         if logged_in:
             print("logged in successfully.")
+            load_financial_data()
             finance_dashboard_menu()
     elif choice == "3":
         print("Program ended.")
