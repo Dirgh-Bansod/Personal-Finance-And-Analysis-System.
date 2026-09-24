@@ -5,25 +5,29 @@ global username__, pasword__
 username__ = ""
 pasword__ = ""
 financial_ledger = []
+userdatabase = {}
 userfiles = "userfiles.txt" 
 entryfiles = ""
 
 # detailes of useres
-def save_user_details():
-    with open(userfiles, "w") as file:
-        file.write(f"{username__}|||{pasword__}")
+def save_user_details(newuser, newpasword):
+    with open(userfiles, "a") as file:
+        file.write(f"{newuser}|||{newpasword}")
 
 def load_user_data():
-    global username__, pasword__
+    global userdatabase
+    userdatabase={}
     try:
         with open(userfiles, "r") as file:
-            line = file.read().strip()
-            if "|||" in line:
-                parts = line.split("|||")
-                username__ = parts[0]
-                pasword__ = parts[1]
+            for line in file:
+                clean = line.strip()
+                if "|||" in clean:
+                    parts = clean.split("|||")
+                    if len(parts) == 2:
+                        userdatabase[parts[0]] = parts[1]
     except FileNotFoundError:
         pass
+
 
 # finantial details
 def save_financial_data():
@@ -56,14 +60,14 @@ def load_financial_data():
 
 #creating new user 
 def new_user_registration():
-    global username__, pasword__
     print(" ------ New User Registration ------")
+    load_user_data()
 
     while True:
         username = input("create a username unique to you:== ")
         if username == "":
             print("username cannot be empty")
-        elif username == username__:
+        elif username == userdatabase:
             print("another user already use this username, please try another one")
         else:
             username__ = username
@@ -82,28 +86,34 @@ def new_user_registration():
         elif pasword != pasword_confirm:
             print("pasword does not match, please try again")
         else:
-            pasword__ = pasword
-            save_user_details()
-            print("registrattion is successfull, you can login now!")
-            break
+           save_user_details(username, pasword)
+           print("registration is successful, you can login now!")
+           break
+
+
 
 # user login with 3attempts
 def user_login():
-    global entryfiles
+    global entryfiles, username__, pasword__  
     print(" ------ User Login page ------")
-    if username__ == "":
-        print("No user found, please register first or enter a valid user name")
+    load_user_data() 
+    
+    if len(userdatabase) == 0:
+        print("No users found in the system. Please register first.")
         return False
         
     attempts = 0
     maxattempts_ = 3
+    
     while attempts < maxattempts_:
         loginusername = input("enter your username:==").strip()
         loginpasword = input("enter your password:==").strip()
         
-        if loginusername == username__ and loginpasword == pasword__:
+        if loginusername in userdatabase and loginpasword == userdatabase[loginusername]:
             print("login successful, access granted.")
-            entryfiles = f"{username__}entryfiles.txt"
+            username__ = loginusername
+            pasword__ = userdatabase[loginusername]
+            entryfiles = f"{username__}_entryfiles.txt"
             return True
         else:
             attempts += 1
@@ -111,8 +121,9 @@ def user_login():
             print(f"Invalid credentials. Attempts used: {attempts}/{maxattempts_}")
             if remainingattempts > 0:
                 print(f"You have {remainingattempts} attempts left, please try again.")
-    print(" Too many failed tries. Access Denied. Returning to main menu...")
-    return False     
+                
+    print("Too many failed tries. Access Denied. Returning to main menu")
+    return False       
 
 #financial dashboard menu
 def finance_dashboard_menu():
