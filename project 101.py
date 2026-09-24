@@ -134,7 +134,7 @@ def finance_dashboard_menu():
             if repeat != "y":
                 print("Returning dashbord menu.")   
         elif choice == "2":
-            view_financial_ledger()
+            view_financial_record()
         elif choice == "3":
             print("Safely logging out of your session. Goodbye!")
             break
@@ -181,21 +181,39 @@ def financial_manager_entry():
     }
     return new_entry
 
-def view_financial_ledger():
-    print("---  Account Activity Ledger ---")
+#finantial record and total sumation
+def view_financial_record():
+    print("---  Account Activity record ---")
     if len(financial_ledger) == 0:
-        print("No transaction entries logged yet.")
+        print("No transaction logged yet.")
         return
         
     print(f"{'Name':<15} | {'Date':<12} | {'Type':<6} | {'Amount'}")
     print("-" * 50)
     
+    total_gains = 0.0
+    total_losses = 0.0
+    
     for entry in financial_ledger:
         if entry["record"] == "gain":
             marker = "+"
+            total_gains += entry["ammount"]
         else:
             marker = "-"
+            total_losses += entry["ammount"]
+            
         print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['record']:<6} | {marker}${entry['ammount']:,.2f}")
+    
+    net_balance = total_gains - total_losses
+    
+    print("----------------------------------------")
+    print(f"Total gains  : +${total_gains:,.2f}")
+    print(f"Total Losses : -${total_losses:,.2f}")
+    print(f"Net Balance  : ${net_balance:,.2f}")
+    print("----------------------------------------")
+
+
+
 
 # main loop
 load_user_data()
