@@ -1,8 +1,9 @@
 ## setting global names####
 
 global username__, pasword__
-username__=""
-pasword__=""
+
+username__ = ""
+pasword__ = ""
 financial_ledger = []
 userfiles = "userfiles.txt" 
 entryfiles = "entryfiles.txt"
@@ -24,8 +25,7 @@ def load_user_data():
     except FileNotFoundError:
         pass
 
-
-#finantial details.
+# finantial details
 def save_financial_data():
     with open(entryfiles, "w") as file:
         for entry in financial_ledger:
@@ -61,8 +61,8 @@ def new_user_registration():
 
     while True:
         username = input("create a username unique to you:== ")
-        if username=="":
-                print("username cannot be empty")
+        if username == "":
+            print("username cannot be empty")
         elif username == username__:
             print("another user already use this username, please try another one")
         else:
@@ -70,41 +70,49 @@ def new_user_registration():
             break
 
     while True:
-        pasword = input("create a unique pasword , pasword must be 10 characteers long with atleast 2 numbers:==")
+        pasword = input("create a unique pasword, pasword must be 10 characters long with minimum 2 numbers:==").strip()
         pasword_confirm = input("confirm your pasword:==")
         digit = sum(1 for char in pasword if char.isdigit())
         if len(pasword) < 10:
             print("pasword must be atleast 10 characters long")
-        elif  digit < 2:
-                print("pasword must have atleast 2 numbers")
+        elif digit < 2:
+            print("pasword must have atleast 2 numbers")
         elif pasword == "":
-                    print("pasword cannot be empty")
+                  print("pasword cannot be empty")
         elif pasword != pasword_confirm:
             print("pasword does not match, please try again")
         else:
             pasword__ = pasword
             save_user_details()
-            print("registration is successfull, you can login now:  ")
+            print("registrattion is successfull, you can login now!")
             break
 
-
-#user loginn
+# user login with 3attempts
 def user_login():
     print(" ------ User Login page ------")
     if username__ == "":
         print("No user found, please register first or enter a valid user name")
         return False
-    while True:
-            inputusername = input("enter your username:==")
-            inputpasword = input("enter your pasword:==")
-            if inputusername == username__ and inputpasword == pasword__:
-               print("login successful, access granter,  ")
-               print(f"welcome to the program {username__}")
-               return True
-            else:
-                print("wrong username or password, please try again")
+        
+    attempts = 0
+    maxattempts_ = 3
+    while attempts < maxattempts_:
+        loginusername = input("enter your username:==").strip()
+        loginpasword = input("enter your password:==").strip()
+        
+        if loginusername == username__ and loginpasword == pasword__:
+            print("login successful, access granted.")
+            return True
+        else:
+            attempts += 1
+            remainingattempts = maxattempts_ - attempts
+            print(f"Invalid credentials. Attempts used: {attempts}/{maxattempts_}")
+            if remainingattempts > 0:
+                print(f"You have {remainingattempts} attempts left, please try again.")
+    print(" Too many failed tries. Access Denied. Returning to main menu...")
+    return False     
 
-#finance dashboard menu
+#financial dashboard menu
 def finance_dashboard_menu():
     while True:
         print("==============================")
@@ -121,7 +129,6 @@ def finance_dashboard_menu():
             financial_ledger.append(new_entry)
             save_financial_data()
             print(f"financial entry added successfully as {new_entry}")
-
             print("-----------------------------------------")
             repeat = input("Do you want to add another entry? (y/n): ").strip().lower()
             if repeat != "y":
@@ -134,10 +141,9 @@ def finance_dashboard_menu():
         else:
             print("Invalid choice. Please enter 1, 2, or 3.")
 
-
-# financial manager
+# financial manager entry setup
 def financial_manager_entry():
-    print(" ----- add finantial entry -----")
+    print("----- add finantial entry -----")
     name = input("enter the name of the financial entry:==")
     date = input("enter the date of the financial entry (dd/mm/yyyy):==")
     while True:
@@ -149,14 +155,15 @@ def financial_manager_entry():
             break
         except ValueError:
             print("Invalid input. Please enter a right value for the ammount.")
+            
     while True:
         print(" ----------------------------------------------")
         print("                TRANSACTION TYPE               ")
         print(" ----------------------------------------------")
-        print("     1.      gain (income or revenue )           ")
-        print("     2.      loss (expense or cost)              ")
+        print("     1.      gain ( income or revenue )           ")
+        print("     2.      loss ( expense or cost )              ")
         print(" ----------------------------------------------")
-        transaction_type = input("select clacificaation option (1 or 2):==")
+        transaction_type = input("select classification option (1 or 2):==")
         if transaction_type == "1":
             record = "gain"
             break
@@ -190,8 +197,7 @@ def view_financial_ledger():
             marker = "-"
         print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['record']:<6} | {marker}${entry['ammount']:,.2f}")
 
-
-#main loop
+# main loop
 load_user_data()
 load_financial_data()                
 
@@ -203,7 +209,6 @@ while True:
     print("1. Register New Account")
     print("2. Login to Dashboard")
     print("3. Exit Program")
-
     choice = input("Select an option (1-3): ")
         
     if choice == "1":
@@ -218,4 +223,3 @@ while True:
         break
     else:
         print("Invalid choice. Please select option 1, 2, or 3.")
-        input("please select a valid option to continue:==")
