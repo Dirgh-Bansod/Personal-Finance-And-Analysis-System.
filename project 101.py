@@ -276,7 +276,8 @@ def view_financial_record():
         print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['category']:<15} | {entry['record']:<6} | {marker}${entry['amount']:,.2f}")
     
     net_balance = total_gains - total_losses
-    
+
+
     print("------------------------------------------------------")
     print(f"Total gains  : +${total_gains:,.2f}")
     print(f"Total Losses : -${total_losses:,.2f}")
