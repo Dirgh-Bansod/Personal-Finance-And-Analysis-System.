@@ -38,8 +38,9 @@ def save_financial_data():
     global entryfiles  
     with open(entryfiles, "w") as file:
         for entry in financial_ledger:
-            line = f"{entry['name']}|||{entry['date']}|||{entry['amount']}|||{entry['record']}\n"
+            line = f"{entry['name']}|||{entry['date']}|||{entry['amount']}|||{entry['record']}|||{entry['category']}\n"
             file.write(line)
+
 
 def load_financial_data():
     global financial_ledger, entryfiles 
@@ -51,13 +52,15 @@ def load_financial_data():
                 cleaned = line.strip()
                 if cleaned != "":
                     parts = cleaned.split("|||")
-                    if len(parts) == 4:
+                    
+                    if len(parts) == 5:
                         val = float(parts[2]) 
                         entry = {
                             "name": parts[0],
                             "date": parts[1],
                             "amount": val, 
-                            "record": parts[3]
+                            "record": parts[3],
+                            "category": parts[4]
                         }
                         financial_ledger.append(entry)
     except FileNotFoundError:
@@ -140,7 +143,7 @@ def exportdata_to_excel():
     exportfilename = f"{username__}_financial_export.csv"
     
     with open(exportfilename, "w") as file:
-        # UPDATED: Included Category into header row
+        
         file.write("entry Name,Date,Classification,Category,Amount\n")
         
         for entry in financial_ledger:
@@ -250,14 +253,15 @@ def financial_manager_entry():
     return new_entry
 
 
-#finantial record and total sumation
+#finantial record
+
 def view_financial_record():
     print("---  Account Activity record ---")
     if len(financial_ledger) == 0:
         print("No transaction logged yet.")
         return
 
-        
+  
     print(f"{'Name':<15} | {'Date':<12} | {'Category':<15} | {'Type':<6} | {'Amount'}")
     print("-" * 65) 
     
@@ -272,17 +276,17 @@ def view_financial_record():
             marker = "-"
             total_losses += entry["amount"]
             
-        
+       
         print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['category']:<15} | {entry['record']:<6} | {marker}${entry['amount']:,.2f}")
     
     net_balance = total_gains - total_losses
-
 
     print("------------------------------------------------------")
     print(f"Total gains  : +${total_gains:,.2f}")
     print(f"Total Losses : -${total_losses:,.2f}")
     print(f"Net Balance  : ${net_balance:,.2f}")
     print("------------------------------------------------------")
+
 
 
 #finantial dashboard menu
