@@ -53,6 +53,7 @@ def load_financial_data():
                 if cleaned != "":
                     parts = cleaned.split("|||")
                     
+                    
                     if len(parts) == 5:
                         val = float(parts[2]) 
                         entry = {
@@ -61,6 +62,18 @@ def load_financial_data():
                             "amount": val, 
                             "record": parts[3],
                             "category": parts[4]
+                        }
+                        financial_ledger.append(entry)
+                        
+                    
+                    elif len(parts) == 4:
+                        val = float(parts[2])
+                        entry = {
+                            "name": parts[0],
+                            "date": parts[1],
+                            "amount": val, 
+                            "record": parts[3],
+                            "category": "Expense"  
                         }
                         financial_ledger.append(entry)
     except FileNotFoundError:
@@ -163,6 +176,7 @@ def exportdata_to_excel():
 
 def financial_manager_entry():
     print("----- add financial entry -----")
+
     
     while True:
         name = input("enter the name of the financial entry:==").strip()
@@ -170,10 +184,12 @@ def financial_manager_entry():
             print("The entry name cannot contain '|||' characters.")
             continue
         break
+
         
     while True:
         print("Enter the date (dd/mm/yyyy) or press [ENTER] to use today's date.")
         date_input = input("Date:==").strip()
+
         
         if date_input == "":
             date = datetime.now().strftime("%d/%m/%Y")
@@ -187,6 +203,7 @@ def financial_manager_entry():
             except ValueError:
                 print("Invalid format/date values! Please match 'dd/mm/yyyy' format rules exactly.")
 
+
     while True:
         try:
             amount = float(input("enter the amount of the financial entry:=="))
@@ -197,6 +214,7 @@ def financial_manager_entry():
         except ValueError:
             print("Invalid input. Please enter a right value for the amount.")
 
+
     while True:
         print(" ----------------------------------------------")
         print("                TRANSACTION TYPE              ")
@@ -206,9 +224,10 @@ def financial_manager_entry():
         print(" ----------------------------------------------")
         transactiontype = input("select classification option (1 or 2):==")
 
+
         if transactiontype == "1":
             record = "gain"
-            
+
             
             print(" ----------------------------------------------")
             print("                SELECT GAIN CATEGORY            ")
@@ -235,13 +254,41 @@ def financial_manager_entry():
                 print("Invalid category choice. Defaulting to 'Other Income'.")
                 category = "Other"
             break
+
             
         elif transactiontype == "2":
             record = "loss"
-            category = "Expense"  
+            
+
+            
+            print(" ----------------------------------------------")
+            print("                SELECT LOSS CATEGORY            ")
+            print(" ----------------------------------------------")
+            print("     1. Food / Groceries")
+            print("     2. Rent / Utilities")
+            print("     3. Entertainment")
+            print("     4. Transportation")
+            print("     5. Other Expense")
+            print(" ----------------------------------------------")
+            
+            loss_choice = input("Select a category (1-5):==").strip()
+            if loss_choice == "1":
+                category = "Food"
+            elif loss_choice == "2":
+                category = "Rent/Utilities"
+            elif loss_choice == "3":
+                category = "Entertainment"
+            elif loss_choice == "4":
+                category = "Transport"
+            elif loss_choice == "5":
+                category = "Other Expense"
+            else:
+                print("Invalid category choice. Defaulting to 'Other Expense'.")
+                category = "Other Expense"
             break
         else:
             print("Invalid choice. Please select option 1 or 2.")
+
 
     new_entry = {
         "name": name,
@@ -251,6 +298,7 @@ def financial_manager_entry():
         "category": category  
     }
     return new_entry
+
 
 
 #finantial record
