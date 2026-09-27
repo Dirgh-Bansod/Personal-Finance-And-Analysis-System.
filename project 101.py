@@ -140,19 +140,22 @@ def exportdata_to_excel():
     exportfilename = f"{username__}_financial_export.csv"
     
     with open(exportfilename, "w") as file:
-        file.write("entry Name,Date,Classification,Amount\n")
+        # UPDATED: Included Category into header row
+        file.write("entry Name,Date,Classification,Category,Amount\n")
         
         for entry in financial_ledger:
             name = f'"{entry["name"]}"' 
             date = entry["date"]
             record = entry["record"]
+            category = entry["category"]
             amount = entry["amount"]
             
-            line = f"{name},{date},{record},{amount}\n"
+           
+            line = f"{name},{date},{record},{category},{amount}\n"
             file.write(line)
             
-    print(f"Success! Your ledger has been exported to '{exportfilename}'.")
-    print("You can open this file directly with Microsoft Excel or Google Sheets!")
+    print(f"Success! Your Data has been exported to '{exportfilename}'.")
+    print("You can open this file as a exel file")
 
 
 def financial_manager_entry():
@@ -253,9 +256,10 @@ def view_financial_record():
     if len(financial_ledger) == 0:
         print("No transaction logged yet.")
         return
+
         
-    print(f"{'Name':<15} | {'Date':<12} | {'Type':<6} | {'Amount'}")
-    print("-" * 50)
+    print(f"{'Name':<15} | {'Date':<12} | {'Category':<15} | {'Type':<6} | {'Amount'}")
+    print("-" * 65) 
     
     total_gains = 0.0
     total_losses = 0.0
@@ -268,16 +272,16 @@ def view_financial_record():
             marker = "-"
             total_losses += entry["amount"]
             
-        # FIX: Standardized key to entry['amount'] (removed double 'm')
-        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['record']:<6} | {marker}${entry['amount']:,.2f}")
+        
+        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['category']:<15} | {entry['record']:<6} | {marker}${entry['amount']:,.2f}")
     
     net_balance = total_gains - total_losses
     
-    print("----------------------------------------")
+    print("------------------------------------------------------")
     print(f"Total gains  : +${total_gains:,.2f}")
     print(f"Total Losses : -${total_losses:,.2f}")
     print(f"Net Balance  : ${net_balance:,.2f}")
-    print("----------------------------------------")
+    print("------------------------------------------------------")
 
 
 #finantial dashboard menu
