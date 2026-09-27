@@ -124,7 +124,32 @@ def user_login():
     print("Too many failed tries. Access Denied. Returning to main menu")
     return False       
 
-#financial dashboard menu
+# export data to excel.
+def exportdata_to_excel():
+    if len(financial_ledger) == 0:
+        print("No transactions available to export.")
+        return
+        
+    exportfilename = f"{username__}_financial_export.csv"
+    
+    with open(exportfilename, "w") as file:
+        file.write("entry Name,Date,Classification,Amount\n")
+        
+      
+        for entry in financial_ledger:
+            name = entry["name"]
+            date = entry["date"]
+            record = entry["record"]
+            amount = entry["ammount"]
+            
+           
+            line = f"{name},{date},{record},{amount}\n"
+            file.write(line)
+            
+    print(f"Success! Your ledger has been exported to '{exportfilename}'.")
+    print("You can open this file directly with Microsoft Excel or Google Sheets!")
+
+#finantial dashboard menu
 def finance_dashboard_menu():
     while True:
         print("==============================")
@@ -132,9 +157,10 @@ def finance_dashboard_menu():
         print("==============================")
         print("1. Add New Transaction Record")
         print("2. View Ledger Activity Logs")
-        print("3. Log Out / Exit System")
+        print("3. Export Ledger to Excel Sheet")
+        print("4. Log Out / Exit System")
         
-        choice = input("Select an action (1-3): ").strip()
+        choice = input("Select an action (1-4): ").strip()
         
         if choice == "1":
             new_entry = financial_manager_entry()
@@ -144,16 +170,20 @@ def finance_dashboard_menu():
             print("-----------------------------------------")
             repeat = input("Do you want to add another entry? (y/n): ").strip().lower()
             if repeat != "y":
-                print("Returning dashbord menu.")   
+                print("Returning dashboard menu.")   
         elif choice == "2":
             view_financial_record()
         elif choice == "3":
+            exportdata_to_excel()
+        elif choice == "4":
             print("Safely logging out of your session. Goodbye!")
             break
         else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
+            print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
-# financial manager entry setup
+
+
+# finantial manager entry setup
 def financial_manager_entry():
     print("----- add financial entry -----")
     name = input("enter the name of the financial entry:==")
