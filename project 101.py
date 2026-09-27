@@ -19,6 +19,7 @@ def save_user_details(newuser, newpasword):
 def load_user_data():
     global userdatabase
     userdatabase = {}
+    
     try:
         with open(userfiles, "r") as file:
             for line in file:
@@ -28,7 +29,8 @@ def load_user_data():
                     if len(parts) == 2:
                         userdatabase[parts[0]] = parts[1]
     except FileNotFoundError:
-        pass
+        
+        pass 
 
 
 # finantial details
@@ -191,17 +193,46 @@ def financial_manager_entry():
 
     while True:
         print(" ----------------------------------------------")
-        print("                TRANSACTION TYPE               ")
+        print("                TRANSACTION TYPE              ")
         print(" ----------------------------------------------")
         print("     1.      gain ( income or revenue )           ")
         print("     2.      loss ( expense or cost )              ")
         print(" ----------------------------------------------")
-        transaction_type = input("select classification option (1 or 2):==")
-        if transaction_type == "1":
+        transactiontype = input("select classification option (1 or 2):==")
+
+        if transactiontype == "1":
             record = "gain"
+            
+            
+            print(" ----------------------------------------------")
+            print("                SELECT GAIN CATEGORY            ")
+            print(" ----------------------------------------------")
+            print("     1. Salary")
+            print("     2. Side Hustle")
+            print("     3. Investments")
+            print("     4. Gifts")
+            print("     5. Other Income")
+            print(" ----------------------------------------------")
+            
+            cat_choice = input("Select a category (1-5):==").strip()
+            if cat_choice == "1":
+                category = "Salary"
+            elif cat_choice == "2":
+                category = "side Hustle"
+            elif cat_choice == "3":
+                category = "Investment"
+            elif cat_choice == "4":
+                category = "Gift"
+            elif cat_choice == "5":
+                category = "Other"
+            else:
+                print("Invalid category choice. Defaulting to 'Other Income'.")
+                category = "Other"
             break
-        elif transaction_type == "2":
+            
+        elif transactiontype == "2":
             record = "loss"
+            category = "Expense"  
             break
         else:
             print("Invalid choice. Please select option 1 or 2.")
@@ -210,7 +241,8 @@ def financial_manager_entry():
         "name": name,
         "date": date,
         "amount": amount,
-        "record": record
+        "record": record,
+        "category": category  
     }
     return new_entry
 
