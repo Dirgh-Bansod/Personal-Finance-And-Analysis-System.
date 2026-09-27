@@ -42,6 +42,7 @@ def save_financial_data():
             file.write(line)
 
 
+
 def load_financial_data():
     global financial_ledger, entryfiles 
     financial_ledger = [] 
@@ -53,7 +54,6 @@ def load_financial_data():
                 if cleaned != "":
                     parts = cleaned.split("|||")
                     
-                    
                     if len(parts) == 5:
                         val = float(parts[2]) 
                         entry = {
@@ -63,21 +63,21 @@ def load_financial_data():
                             "record": parts[3],
                             "category": parts[4]
                         }
-                        financial_ledger.append(entry)
+                        financial_ledger.append(entry) 
                         
-                    
                     elif len(parts) == 4:
                         val = float(parts[2])
                         entry = {
                             "name": parts[0],
                             "date": parts[1],
                             "amount": val, 
-                            "record": parts[3],
-                            "category": "Expense"  
+                            "record": "loss",       
+                            "category": "Other Expense"  
                         }
-                        financial_ledger.append(entry)
+                        financial_ledger.append(entry) 
     except FileNotFoundError:
         pass
+
 
 
 #creating new user 
@@ -264,8 +264,8 @@ def financial_manager_entry():
             print(" ----------------------------------------------")
             print("                SELECT LOSS CATEGORY            ")
             print(" ----------------------------------------------")
-            print("     1. Food / Groceries")
-            print("     2. Rent / Utilities")
+            print("     1. Food ")
+            print("     2. Rent ")
             print("     3. Entertainment")
             print("     4. Transportation")
             print("     5. Other Expense")
@@ -275,7 +275,7 @@ def financial_manager_entry():
             if loss_choice == "1":
                 category = "Food"
             elif loss_choice == "2":
-                category = "Rent/Utilities"
+                category = "Rent"
             elif loss_choice == "3":
                 category = "Entertainment"
             elif loss_choice == "4":
@@ -336,8 +336,7 @@ def view_financial_record():
     print("------------------------------------------------------")
 
 
-
-#finantial dashboard menu
+# financial dashboard menu
 def finance_dashboard_menu():
     while True:
         print("==============================")
@@ -345,10 +344,11 @@ def finance_dashboard_menu():
         print("==============================")
         print("1. Add New Transaction Record")
         print("2. View Ledger Activity Logs")
-        print("3. Export Ledger to Excel Sheet")
-        print("4. Log Out / Exit System")
+        print("3. View Category Analytics ")  
+        print("4. Export Ledger to Excel Sheet")
+        print("5. Log Out / Exit System")
         
-        choice = input("Select an action (1-4): ").strip()
+        choice = input("Select an action (1-5): ").strip() 
         
         if choice == "1":
             while True:
@@ -364,13 +364,82 @@ def finance_dashboard_menu():
 
         elif choice == "2": 
             view_financial_record()
-        elif choice == "3":
+        elif choice == "3":                     
+            financial_analytics()
+        elif choice == "4":                    
             exportdata_to_excel()
-        elif choice == "4":
+        elif choice == "5":                   
             print("Safely logging out of your session. Goodbye!")
             break
         else:
-            print("Invalid choice. Please enter 1, 2, 3, or 4.")
+            print("Invalid choice. Please enter 1, 2, 3, 4, or 5.")
+
+
+#analysis of data
+def financial_analytics():
+
+    print("--- Financial Analytics Dashboard ---")
+
+    if len(financial_ledger) == 0:
+        print("No data available to analyze yet. Add transactions first!")
+        return
+
+   
+    gain_categories = {}
+    loss_categories = {}
+
+    for entry in financial_ledger:
+
+        cat = entry["category"]
+        amount = entry["amount"]
+        
+        if entry["record"] == "gain":
+            gain_categories[cat] = gain_categories.get(cat, 0.0) + amount
+        else:
+            loss_categories[cat] = loss_categories.get(cat, 0.0) + amount
+
+    print("==============================================")
+    print("               INCOME ANALYSIS                ")
+    print("==============================================")
+
+    if gain_categories:
+        
+        top_gain_cat = max(gain_categories, key=gain_categories.get)
+        print(f"Highest Earning Category: {top_gain_cat}")
+        print(f"Total Amount Earned   : ${gain_categories[top_gain_cat]:,.2f}")
+        
+        print("All Income Breakdowns:")
+        for cat, total in sorted(gain_categories.items(), key=lambda x: x[1], reverse=True):
+            print(f" - {cat:<15}: ${total:,.2f}")
+
+     
+
+
+    else:
+        print("No income logs found.")
+
+
+    print("==============================================")
+    print("               EXPENSE ANALYSIS               ")
+    print("==============================================")
+    if loss_categories:
+
+
+        
+        top_loss_cat = max(loss_categories, key=loss_categories.get)
+        print(f" Highest Spending Category: {top_loss_cat}")
+        print(f" Total Amount Spent      : ${loss_categories[top_loss_cat]:,.2f}")
+        
+        print("All Expense Breakdowns:")
+        for cat, total in sorted(loss_categories.items(), key=lambda x: x[1], reverse=True):
+            print(f" - {cat:<15}: ${total:,.2f}")
+    else:
+
+        print("No expense found.")
+        print("==============================================")
+
+
+
 
 
 # main loop
@@ -399,3 +468,5 @@ while True:
         break
     else:
         print("Invalid choice. Please select option 1, 2, or 3.")
+
+
