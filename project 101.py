@@ -16,7 +16,7 @@ def save_user_details(newuser, newpasword):
 
 def load_user_data():
     global userdatabase
-    userdatabase={}
+    userdatabase = {}
     try:
         with open(userfiles, "r") as file:
             for line in file:
@@ -67,7 +67,7 @@ def new_user_registration():
         username = input("create a username unique to you:== ").strip()
         if username == "":
             print("username cannot be empty")
-        elif username == userdatabase:
+        elif username in userdatabase:
             print("another user already use this username, please try another one")
         else:
             break
@@ -81,14 +81,13 @@ def new_user_registration():
         elif digit < 2:
             print("pasword must have atleast 2 numbers")
         elif pasword == "":
-                  print("pasword cannot be empty")
+                   print("pasword cannot be empty")
         elif pasword != pasword_confirm:
-            print("pasword does not match, please try again")
+                   print("pasword does not match, please try again")
         else:
-           save_user_details(username, pasword)
-           print("registration is successful, you can login now!")
-           break
-
+            save_user_details(username, pasword)
+            print("registration is successful, you can login now!")
+            break
 
 
 # user login with 3attempts
@@ -156,7 +155,7 @@ def finance_dashboard_menu():
 
 # financial manager entry setup
 def financial_manager_entry():
-    print("----- add finantial entry -----")
+    print("----- add financial entry -----")
     name = input("enter the name of the financial entry:==")
     date = input("enter the date of the financial entry (dd/mm/yyyy):==")
     while True:
@@ -227,7 +226,6 @@ def view_financial_record():
 
 
 
-
 # main loop
 load_user_data()                
 
@@ -239,18 +237,19 @@ while True:
     print("1. Register New Account")
     print("2. Login to Dashboard")
     print("3. Exit Program")
-    choice = input("Select an option (1-3): ")
+    choice = input("Select an option (1-3): ").strip()
         
     if choice == "1":
         new_user_registration()
     elif choice == "2":
         logged_in = user_login()
         if logged_in:
-            print("logged in successfully.")
-            load_financial_data()
+            print("Logged in successfully.")
             finance_dashboard_menu()
+            logged_in = False 
     elif choice == "3":
-        print("Program ended.")
+        print("Program ended safely. Goodbye!")
         break
     else:
         print("Invalid choice. Please select option 1, 2, or 3.")
+
