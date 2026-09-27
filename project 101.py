@@ -1,5 +1,6 @@
-## setting global names####
+from datetime import datetime 
 
+## setting global names####
 global username__, pasword__
 
 username__ = ""
@@ -8,6 +9,7 @@ financial_ledger = []
 userdatabase = {}
 userfiles = "userfiles.txt" 
 entryfiles = ""
+
 
 # detailes of useres
 def save_user_details(newuser, newpasword):
@@ -31,13 +33,14 @@ def load_user_data():
 
 # finantial details
 def save_financial_data():
+    global entryfiles  
     with open(entryfiles, "w") as file:
         for entry in financial_ledger:
-            line = f"{entry['name']}|||{entry['date']}|||{entry['ammount']}|||{entry['record']}\n"
+            line = f"{entry['name']}|||{entry['date']}|||{entry['amount']}|||{entry['record']}\n"
             file.write(line)
 
 def load_financial_data():
-    global financial_ledger
+    global financial_ledger, entryfiles 
     financial_ledger = [] 
     
     try:
@@ -51,12 +54,13 @@ def load_financial_data():
                         entry = {
                             "name": parts[0],
                             "date": parts[1],
-                            "ammount": val, 
+                            "amount": val, 
                             "record": parts[3]
                         }
                         financial_ledger.append(entry)
     except FileNotFoundError:
         pass
+
 
 #creating new user 
 def new_user_registration():
@@ -124,6 +128,7 @@ def user_login():
     print("Too many failed tries. Access Denied. Returning to main menu")
     return False       
 
+
 # export data to excel.
 def exportdata_to_excel():
     if len(financial_ledger) == 0:
@@ -135,69 +140,55 @@ def exportdata_to_excel():
     with open(exportfilename, "w") as file:
         file.write("entry Name,Date,Classification,Amount\n")
         
-      
         for entry in financial_ledger:
-            name = entry["name"]
+            name = f'"{entry["name"]}"' 
             date = entry["date"]
             record = entry["record"]
-            amount = entry["ammount"]
+            amount = entry["amount"]
             
-           
             line = f"{name},{date},{record},{amount}\n"
             file.write(line)
             
     print(f"Success! Your ledger has been exported to '{exportfilename}'.")
     print("You can open this file directly with Microsoft Excel or Google Sheets!")
 
-#finantial dashboard menu
-def finance_dashboard_menu():
-    while True:
-        print("==============================")
-        print(f"   FINANCE DASHBOARD: {username__}   ")
-        print("==============================")
-        print("1. Add New Transaction Record")
-        print("2. View Ledger Activity Logs")
-        print("3. Export Ledger to Excel Sheet")
-        print("4. Log Out / Exit System")
-        
-        choice = input("Select an action (1-4): ").strip()
-        
-        if choice == "1":
-            new_entry = financial_manager_entry()
-            financial_ledger.append(new_entry)
-            save_financial_data()
-            print(f"financial entry added successfully as {new_entry}")
-            print("-----------------------------------------")
-            repeat = input("Do you want to add another entry? (y/n): ").strip().lower()
-            if repeat != "y":
-                print("Returning dashboard menu.")   
-        elif choice == "2":
-            view_financial_record()
-        elif choice == "3":
-            exportdata_to_excel()
-        elif choice == "4":
-            print("Safely logging out of your session. Goodbye!")
-            break
-        else:
-            print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
-
-
-# finantial manager entry setup
 def financial_manager_entry():
     print("----- add financial entry -----")
-    name = input("enter the name of the financial entry:==")
-    date = input("enter the date of the financial entry (dd/mm/yyyy):==")
+    
+    while True:
+        name = input("enter the name of the financial entry:==").strip()
+        if "|||" in name:
+            print("The entry name cannot contain '|||' characters.")
+            continue
+        break
+        
+    while True:
+        print("Enter the date (dd/mm/yyyy) or press [ENTER] to use today's date.")
+        date_input = input("Date:==").strip()
+        
+        if date_input == "":
+            date = datetime.now().strftime("%d/%m/%Y")
+            print(f"-> Automatically stamped with today's date: {date}")
+            break
+        else:
+            try:
+                datetime.strptime(date_input, "%d/%m/%Y")
+                date = date_input
+                break
+            except ValueError:
+                print("Invalid format/date values! Please match 'dd/mm/yyyy' format rules exactly.")
+
     while True:
         try:
-            ammount = float(input("enter the ammount of the financial entry:=="))
-            if ammount <= 0:
-                print("enter a valid ammount greater than 0")
+            amount = float(input("enter the amount of the financial entry:=="))
+            if amount <= 0:
+                print("enter a valid amount greater than 0")
                 continue
             break
         except ValueError:
-            print("Invalid input. Please enter a right value for the ammount.")
-            
+            print("Invalid input. Please enter a right value for the amount.")
+
     while True:
         print(" ----------------------------------------------")
         print("                TRANSACTION TYPE               ")
@@ -218,10 +209,11 @@ def financial_manager_entry():
     new_entry = {
         "name": name,
         "date": date,
-        "ammount": ammount,
+        "amount": amount,
         "record": record
     }
     return new_entry
+
 
 #finantial record and total sumation
 def view_financial_record():
@@ -239,12 +231,13 @@ def view_financial_record():
     for entry in financial_ledger:
         if entry["record"] == "gain":
             marker = "+"
-            total_gains += entry["ammount"]
+            total_gains += entry["amount"]
         else:
             marker = "-"
-            total_losses += entry["ammount"]
+            total_losses += entry["amount"]
             
-        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['record']:<6} | {marker}${entry['ammount']:,.2f}")
+        # FIX: Standardized key to entry['amount'] (removed double 'm')
+        print(f"{entry['name']:<15} | {entry['date']:<12} | {entry['record']:<6} | {marker}${entry['amount']:,.2f}")
     
     net_balance = total_gains - total_losses
     
@@ -254,6 +247,41 @@ def view_financial_record():
     print(f"Net Balance  : ${net_balance:,.2f}")
     print("----------------------------------------")
 
+
+#finantial dashboard menu
+def finance_dashboard_menu():
+    while True:
+        print("==============================")
+        print(f"   FINANCE DASHBOARD: {username__}   ")
+        print("==============================")
+        print("1. Add New Transaction Record")
+        print("2. View Ledger Activity Logs")
+        print("3. Export Ledger to Excel Sheet")
+        print("4. Log Out / Exit System")
+        
+        choice = input("Select an action (1-4): ").strip()
+        
+        if choice == "1":
+            while True:
+                new_entry = financial_manager_entry()
+                financial_ledger.append(new_entry)
+                save_financial_data()
+                print("Financial entry added successfully!")
+              
+                repeat = input("Do you want to add another entry? (y/n): ").strip().lower()
+                if repeat != "y":
+                    print("Returning to dashboard menu.")
+                    break
+
+        elif choice == "2": 
+            view_financial_record()
+        elif choice == "3":
+            exportdata_to_excel()
+        elif choice == "4":
+            print("Safely logging out of your session. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
 
 # main loop
@@ -267,19 +295,18 @@ while True:
     print("1. Register New Account")
     print("2. Login to Dashboard")
     print("3. Exit Program")
-    choice = input("Select an option (1-3): ").strip()
+    mainchoice = input("Select an option (1-3): ").strip()
         
-    if choice == "1":
+    if mainchoice == "1":
         new_user_registration()
-    elif choice == "2":
-        logged_in = user_login()
+    elif mainchoice == "2":
+        logged_in = user_login() 
         if logged_in:
             print("Logged in successfully.")
             finance_dashboard_menu()
             logged_in = False 
-    elif choice == "3":
+    elif mainchoice == "3":
         print("Program ended safely. Goodbye!")
         break
     else:
         print("Invalid choice. Please select option 1, 2, or 3.")
-
